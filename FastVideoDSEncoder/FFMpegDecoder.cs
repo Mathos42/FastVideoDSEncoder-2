@@ -114,8 +114,7 @@ namespace Gericom.FastVideoDSEncoder
 
             if (startPts != 0 && VideoStreamId != NoStream)
             {
-                if (av_seek_frame(_formatContext, VideoStreamId, startPts, 0) < 0)
-                    throw new Exception("av_seek_frame failed");
+                SeekToPts(startPts);
                 avcodec_flush_buffers(_videoDecContext);
 
                 if (AudioStreamId != NoStream)
@@ -156,7 +155,14 @@ namespace Gericom.FastVideoDSEncoder
 
             if (VideoStreamId != NoStream)
             {
-                _rgbData = (byte*)NativeMemory.AlignedAlloc(256 * 192 * 4, 16);
+                // NOTE: this used to be a hardcoded 256*192*4 (the Nintendo DS
+                // screen size), but FrameHeight can exceed 192 for videos with
+                // an unusual aspect ratio (e.g. portrait/vertical videos shot
+                // on a phone). sws_scale below always writes FrameHeight rows,
+                // so allocating for a fixed 192 rows silently corrupted the
+                // heap (crash with no managed exception, exit code
+                // 0xC0000374 / STATUS_HEAP_CORRUPTION) whenever FrameHeight > 192.
+                _rgbData = (byte*)NativeMemory.AlignedAlloc((nuint)(256 * FrameHeight * 4), 16);
 
                 while (FirstVideoPts == -1 && PumpData()) ;
             }
@@ -165,6 +171,73 @@ namespace Gericom.FastVideoDSEncoder
             {
                 while (FirstAudioPktPos == -1 && PumpData()) ;
             }
+        }
+
+        private static string GetAvError(int errnum)
+        {
+            byte* buf = stackalloc byte[AV_ERROR_MAX_STRING_SIZE];
+            av_strerror(errnum, buf, (ulong)AV_ERROR_MAX_STRING_SIZE);
+            return Marshal.PtrToStringAnsi((IntPtr)buf);
+        }
+
+        /// <summary>
+        /// Seeks the video stream to (at or before) the given pts, in the video
+        /// stream's own time base. Several strategies are tried because not every
+        /// container/demuxer combination behaves well with a plain flags=0 seek
+        /// (which is what caused "av_seek_frame failed" for some input files).
+        /// </summary>
+        private void SeekToPts(long targetPts)
+        {
+            var stream = _formatContext->streams[VideoStreamId];
+
+            // Clamp the requested pts to the stream's actual range, some
+            // containers don't report an exact duration and asking to seek
+            // past it (or before the stream's start_time) makes every demuxer
+            // fail the seek.
+            long minPts = stream->start_time != AV_NOPTS_VALUE ? stream->start_time : 0;
+            long maxPts = long.MaxValue;
+            if (stream->duration > 0)
+                maxPts = minPts + stream->duration - 1;
+
+            long pts = targetPts;
+            if (pts < minPts)
+                pts = minPts;
+            if (pts > maxPts)
+                pts = maxPts;
+
+            int ret;
+
+            // 1) Regular seek on the video stream, biased towards the previous
+            //    keyframe (this is the flag most demuxers expect; flag 0 alone
+            //    is rejected outright by some of them).
+            ret = av_seek_frame(_formatContext, VideoStreamId, pts, AVSEEK_FLAG_BACKWARD);
+            if (ret >= 0)
+                return;
+
+            // 2) Some demuxers without a proper index only support "any" frame
+            //    seeking (not necessarily a keyframe).
+            ret = av_seek_frame(_formatContext, VideoStreamId, pts, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+            if (ret >= 0)
+                return;
+
+            // 3) Fall back to a generic seek expressed in AV_TIME_BASE units on
+            //    the whole format context (stream_index = -1). This goes through
+            //    a different code path in avformat and succeeds on some files
+            //    where a per-stream seek does not.
+            long tsInTimeBase = av_rescale_q(pts, stream->time_base, av_get_time_base_q());
+            ret = av_seek_frame(_formatContext, -1, tsInTimeBase, AVSEEK_FLAG_BACKWARD);
+            if (ret >= 0)
+                return;
+
+            // 4) Last resort: seek back to the very start of the stream. This
+            //    keeps single-job encodes (or the first chunk of a multi-job
+            //    encode) working even if the file genuinely cannot be seeked
+            //    into the middle of.
+            ret = av_seek_frame(_formatContext, VideoStreamId, minPts, AVSEEK_FLAG_BACKWARD);
+            if (ret >= 0)
+                return;
+
+            throw new Exception($"av_seek_frame failed (requested pts {targetPts}, clamped to {pts}): {GetAvError(ret)}");
         }
 
         public AVRational GetFrameRate()
