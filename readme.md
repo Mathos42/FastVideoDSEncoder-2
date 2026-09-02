@@ -1,7 +1,8 @@
 FastVideoDS Encoder
 ===================
 Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) pour lire les vidéos encodées.  
-Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos  
+
+- Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos  
 
 Fichiers .bat pour :  
 Encodage d'une ou plusieurs vidéos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
@@ -24,7 +25,8 @@ Encodage d'un dossier entier de vidéos : https://www.hiraven.com/FastVideoDS/En
 FastVideoDS Encoder
 ===================
 Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) to play back the encoded videos.  
-Encoder updated to fix compatibility issues with certain video files  
+
+- Encoder updated to fix compatibility issues with certain video files  
 
 .bat files for :  
 Encoding one or multiple videos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
