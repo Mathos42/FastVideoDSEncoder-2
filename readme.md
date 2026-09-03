@@ -1,4 +1,4 @@
-FastVideoDS Encoder
+FastVideoDS Encoder 2
 ===================
 Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) pour lire les vidéos encodées.  
 
