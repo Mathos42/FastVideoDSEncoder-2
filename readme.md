@@ -25,7 +25,7 @@ Encodage d'un dossier entier de vidéos : https://www.hiraven.com/FastVideoDS/En
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-FastVideoDS Encoder
+FastVideoDS Encoder 2
 ===================
 Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) to play back the encoded videos.  
 
