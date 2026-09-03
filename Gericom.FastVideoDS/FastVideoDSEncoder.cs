@@ -22,9 +22,7 @@ namespace Gericom.FastVideoDS
         public int Height { get; }
 
         private int  _q;
-        private bool _prevDataValid;
 
-        private RefFrame _lastFrame;
         private int      _oldQ;
 
         private RefFrame _backRefFrame;
@@ -75,7 +73,7 @@ namespace Gericom.FastVideoDS
 
             _framePool = new FramePool(Width, Height);
 
-            _prevDataValid = false;
+           // _prevDataValid = false;
 
             _q    = q;
             _oldQ = q;
@@ -480,6 +478,7 @@ namespace Gericom.FastVideoDS
                 frame = _bQueue.Dequeue();
 
                 throw new NotImplementedException();
+                /* 
                 // (data, decFrame, _) = EncodeBFrame(frame.Frame, _backRefFrame.Frame, _forwardRefFrame.Frame);
                 // var p = EncodePFrame(frame.Frame, _backRefFrame.Frame);
                 //
@@ -490,11 +489,11 @@ namespace Gericom.FastVideoDS
                 // ulong sadB = sadBR + sadBG + sadBB;
                 // ulong sadP = sadPR + sadPG + sadPB;
 
-                frame.Unref();
+                //frame.Unref();
 
-                _backRefFrame.Unref();
-                _backRefFrame = decFrame;
-                _gopLength++;
+               // _backRefFrame.Unref();
+              //  _backRefFrame = decFrame;
+              //  _gopLength++;
 
                 var result = new EncFrame(data, decFrame, FvFrameType.BFrame, _frameNumber++);
                 if (_bQueue.Count == 0)
@@ -507,6 +506,7 @@ namespace Gericom.FastVideoDS
                 }
 
                 return result;
+                */
             }
 
             if (_backRefFrame == null || _frameQueue.Peek().forceIFrame || _gopLength >= _maxGopLength)
