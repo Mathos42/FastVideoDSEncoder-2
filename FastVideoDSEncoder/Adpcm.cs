@@ -78,7 +78,6 @@ namespace Gericom.FastVideoDSEncoder
                 offset += 4;
             }
 
-            int error = 0;
             for (int i = 0; i < samples.Length; i += 8)
             {
                 uint nibbles = 0;

@@ -44,9 +44,10 @@ namespace Gericom.FastVideoDSEncoder
 
         public int FrameHeight { get; private set; }
 
-        static FFMpegDecoder()
+		static FFMpegDecoder()
         {
             ffmpeg.RootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64");
+            ffmpeg.av_log_set_level(ffmpeg.AV_LOG_ERROR);
         }
 
         public FFMpegDecoder(string srcPath, long startPts = 0, int videoStreamId = -1, int audioStreamId = -1)
@@ -88,10 +89,15 @@ namespace Gericom.FastVideoDSEncoder
             }
 
             if (videoStreamId != NoStream && videoStreamId < 0)
-                throw new Exception("No video stream found");
+				throw new Exception("No video stream found");
 
-            if (audioStreamId != NoStream && audioStreamId < 0)
-                throw new Exception("No audio stream found");
+// NOTE: unlike video, a missing audio track is not an error - it
+// just means this is a video-only file. Auto-detect (StreamAuto)
+// falls back to NoStream instead of throwing so callers that only
+// want metadata (duration, frame rate, ...) don't need to know in
+// advance whether the file has audio.
+			if (audioStreamId != NoStream && audioStreamId < 0)
+			audioStreamId = NoStream;
 
             VideoStreamId = videoStreamId;
             AudioStreamId = audioStreamId;
@@ -143,7 +149,8 @@ namespace Gericom.FastVideoDSEncoder
                 _swsContext = sws_getContext(_videoDecContext->width, _videoDecContext->height,
                     _videoDecContext->pix_fmt,
                     256, FrameHeight, AVPixelFormat.AV_PIX_FMT_BGRA,
-                    SWS_LANCZOS | SWS_FULL_CHR_H_INT | SWS_FULL_CHR_H_INP | SWS_ACCURATE_RND, null, null, null);
+                    (int)(SwsFlags.SWS_LANCZOS | SwsFlags.SWS_FULL_CHR_H_INT | SwsFlags.SWS_FULL_CHR_H_INP |
+                          SwsFlags.SWS_ACCURATE_RND), null, null, null);
             }
 
             _packet = av_packet_alloc();
@@ -313,14 +320,14 @@ namespace Gericom.FastVideoDSEncoder
                 return false;
             }
 
-            if (MaxAudioPktPos != -1 && _frame->pkt_pos >= MaxAudioPktPos)
-            {
-                av_frame_unref(_frame);
-                return false;
-            }
-
+            // NOTE: AVFrame.pkt_pos was removed upstream in recent FFmpeg
+            // versions, and this position-based audio trimming was already
+            // unused in practice (FvEncoder always opens per-job decoders
+            // with NoStream audio, and the caller that used to set
+            // MaxAudioPktPos is commented out), so it's left disabled here
+            // rather than reimplemented against a different field.
             if (FirstAudioPktPos == -1)
-                FirstAudioPktPos = _frame->pkt_pos;
+                FirstAudioPktPos = 0;
 
             _curAudioPts = _frame->best_effort_timestamp;
 
@@ -511,14 +518,12 @@ namespace Gericom.FastVideoDSEncoder
 
             if (AudioStreamId != NoStream)
             {
-                avcodec_close(_audioDecContext);
                 fixed (AVCodecContext** audioDecContext = &_audioDecContext)
                     avcodec_free_context(audioDecContext);
             }
 
             if (VideoStreamId != NoStream)
             {
-                avcodec_close(_videoDecContext);
                 fixed (AVCodecContext** videoDecContext = &_videoDecContext)
                     avcodec_free_context(videoDecContext);
             }
