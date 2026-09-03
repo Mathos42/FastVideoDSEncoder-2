@@ -12,7 +12,7 @@ Encodage d'une ou plusieurs vidéos : https://www.hiraven.com/FastVideoDS/FastVi
 Encodage d'un dossier entier de vidéos : https://www.hiraven.com/FastVideoDS/Encodage_repertoire.bat  
 
 ## Utilisation manuelle  
-    FastVideoDSEncoder [-j jobs] input output.fv
+    FastVideoDSEncoder.exe %%f "%%~nf.fv"
 
 * **-j *jobs*** Nombre de tâches simultanées (facultatif, par défaut : nombre de threads du processeur / 1,5)  
 * ***input*** Le fichier vidéo d'entrée. La plupart des formats sont pris en charge par FFmpeg.  
@@ -39,7 +39,7 @@ Encoding one or multiple videos : https://www.hiraven.com/FastVideoDS/FastVideoD
 Encoding an entire folder of videos : https://www.hiraven.com/FastVideoDS/Encodage_repertoire.bat  
 
 ## Manual operation
-    FastVideoDSEncoder [-j jobs] input output.fv
+    FastVideoDSEncoder.exe %%f "%%~nf.fv"
 
 * **-j *jobs*** Number of concurrent jobs (optional, default: cpu threads / 1.5)
 * ***input*** The input video file. Most formats are supported through FFmpeg.
