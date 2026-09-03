@@ -4,7 +4,7 @@ Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://git
 
 - Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos  
 - Mis à Jour avec FFMpeg 9.0.1, prends désormais en compte les nouveaux codecs vidéos  
-  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) directement utilisable, fichiers .bat inclus  
+  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) prêt à l'emploi, fichiers .bat inclus  
 
 Fichiers .bat pour :  
 Encodage d'une ou plusieurs vidéos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
