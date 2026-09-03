@@ -114,7 +114,8 @@ namespace Gericom.FastVideoDSEncoder
 
             var context = new FvEncoder();
 
-            var decoder = new FFMpegDecoder(inFile);
+            var decoder = new FFMpegDecoder(inFile, videoStreamId: FFMpegDecoder.StreamAuto,
+                audioStreamId: FFMpegDecoder.StreamAuto);
 
             int audioStream = decoder.AudioStreamId;
 
@@ -178,28 +179,47 @@ namespace Gericom.FastVideoDSEncoder
                     }
                 }
 
-                int consoleWidth = Console.BufferWidth;
-                int barWidth     = consoleWidth - 3;
-                Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
-                Console.Write('[');
-                int totalFrames = endFrames[^1];
-                for (int i = 0; i < barWidth; i++)
+                if (!Console.IsOutputRedirected)
                 {
-                    int barFrame = (i + 1) * totalFrames / barWidth;
-                    for (int j = 0; j < jobCount; j++)
+                    int consoleWidth = Console.BufferWidth;
+                    int barWidth     = consoleWidth - 3;
+                    Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
+                    Console.Write('[');
+                    int totalFrames = endFrames[^1];
+                    for (int i = 0; i < barWidth; i++)
                     {
-                        if (barFrame >= startFrames[j] && barFrame <= endFrames[j])
+                        int barFrame = (i + 1) * totalFrames / barWidth;
+                        for (int j = 0; j < jobCount; j++)
                         {
-                            if (context.JobProgess[j] >= barFrame)
-                                Console.Write('#');
-                            else
-                                Console.Write('.');
-                            break;
+                            if (barFrame >= startFrames[j] && barFrame <= endFrames[j])
+                            {
+                                if (context.JobProgess[j] >= barFrame)
+                                    Console.Write('#');
+                                else
+                                    Console.Write('.');
+                                break;
+                            }
                         }
                     }
-                }
 
-                Console.Write(']');
+                    Console.Write(']');
+                }
+                else
+                {
+                    // stdout isn't attached to a real console (e.g. redirected
+                    // to a file or pipe) - Console.BufferWidth/SetCursorPosition
+                    // throw IOException ("Descripteur non valide") in that case,
+                    // so fall back to a plain progress line instead of a bar.
+                    int totalFrames  = endFrames[^1];
+                    int doneFrames   = context.JobProgess.Sum();
+                    int totalWork    = 0;
+                    for (int j = 0; j < jobCount; j++)
+                        totalWork += endFrames[j] - startFrames[j];
+                    int progressPct = totalWork > 0
+                        ? (int)(100L * (doneFrames - startFrames.Sum()) / totalWork)
+                        : 100;
+                    Console.WriteLine($"Progress: {progressPct}%");
+                }
 
                 if (allDone)
                 {
@@ -299,16 +319,25 @@ namespace Gericom.FastVideoDSEncoder
 
                 while (!audioTask.IsCompleted)
                 {
-                    int consoleWidth = Console.BufferWidth;
-                    int barWidth     = consoleWidth - 3;
-                    Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
-                    Console.Write('[');
-                    int totalFrames = endFrames[^1];
-                    int done        = barWidth * f / totalFrames;
-                    Console.Write(Enumerable.Repeat('#', done).ToArray());
-                    Console.Write(Enumerable.Repeat('.', barWidth - done).ToArray());
+                    if (!Console.IsOutputRedirected)
+                    {
+                        int consoleWidth = Console.BufferWidth;
+                        int barWidth     = consoleWidth - 3;
+                        Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
+                        Console.Write('[');
+                        int totalFrames = endFrames[^1];
+                        int done        = barWidth * f / totalFrames;
+                        Console.Write(Enumerable.Repeat('#', done).ToArray());
+                        Console.Write(Enumerable.Repeat('.', barWidth - done).ToArray());
 
-                    Console.Write(']');
+                        Console.Write(']');
+                    }
+                    else
+                    {
+                        int totalFrames = endFrames[^1];
+                        int pct         = totalFrames > 0 ? 100 * f / totalFrames : 100;
+                        Console.WriteLine($"Audio progress: {pct}%");
+                    }
 
                     Thread.Sleep(500);
                 }
