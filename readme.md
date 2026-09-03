@@ -2,7 +2,10 @@ FastVideoDS Encoder
 ===================
 Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) pour lire les vidéos encodées.  
 
-- Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos  
+- Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos
+- Mise à Jour avec FFMpeg 9.0.1, prends désormais en compte les nouveaux codecs vidéos (tans que vous restez en .avi et .mp4 et qu'ils sont encodés selon les normes)  
+
+  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) directement utilisable, fichiers .bat inclus  
 
 Fichiers .bat pour :  
 Encodage d'une ou plusieurs vidéos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
@@ -26,7 +29,10 @@ FastVideoDS Encoder
 ===================
 Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) to play back the encoded videos.  
 
-- Encoder updated to fix compatibility issues with certain video files  
+- Encoder updated to fix compatibility issues with certain video files
+- Updated to FFmpeg 9.0.1; now supports new video codecs (provided you stick to .avi and .mp4 formats and they are encoded according to the relevant standards)  
+
+  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) ready to use, including .bat files  
 
 .bat files for :  
 Encoding one or multiple videos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
