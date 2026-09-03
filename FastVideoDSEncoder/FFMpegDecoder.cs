@@ -47,7 +47,7 @@ namespace Gericom.FastVideoDSEncoder
 		static FFMpegDecoder()
         {
             ffmpeg.RootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64");
-            ffmpeg.av_log_set_level(ffmpeg.AV_LOG_ERROR);
+            ffmpeg.av_log_set_level(ffmpeg.AV_LOG_FATAL);
         }
 
         public FFMpegDecoder(string srcPath, long startPts = 0, int videoStreamId = -1, int audioStreamId = -1)
