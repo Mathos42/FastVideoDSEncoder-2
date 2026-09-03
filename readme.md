@@ -14,8 +14,8 @@ Encodage d'un dossier entier de vidéos : https://www.hiraven.com/FastVideoDS/En
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
 
 * **-j *jobs*** Nombre de tâches simultanées (facultatif, par défaut : nombre de threads du processeur / 1,5)  
-* ***input*** Le fichier vidéo d'entrée. La plupart des formats sont pris en charge par FFmpeg.  
-* ***output.fv*** Le fichier vidéo de sortie.  
+* ***%%f*** Le fichier vidéo d'entrée. La plupart des formats sont pris en charge par FFmpeg.  
+* ***"%%~nf.fv"*** Le fichier vidéo de sortie.  
 
 ## Bibliothèques utilisées
 * [CommandLineParser](https://github.com/commandlineparser/commandline)
@@ -41,8 +41,8 @@ Encoding an entire folder of videos : https://www.hiraven.com/FastVideoDS/Encoda
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
 
 * **-j *jobs*** Number of concurrent jobs (optional, default: cpu threads / 1.5)
-* ***input*** The input video file. Most formats are supported through FFmpeg.
-* ***output.fv*** The output video file.
+* ***%%f*** The input video file. Most formats are supported through FFmpeg.
+* ***"%%~nf.fv"*** The output video file.
 
 ## Libraries Used
 * [CommandLineParser](https://github.com/commandlineparser/commandline)
