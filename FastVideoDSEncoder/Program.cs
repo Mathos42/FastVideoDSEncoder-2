@@ -21,7 +21,7 @@ namespace Gericom.FastVideoDSEncoder
 
         static void Main(string[] args)
         {
-            Console.WriteLine("FastVideoDS Encoder by Gericom");
+            Console.WriteLine("FastVideoDS Encoder  original version by Gericom – Modified by Mathos");
 
             if (!Avx2.IsSupported)
             {
