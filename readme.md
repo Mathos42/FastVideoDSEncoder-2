@@ -3,7 +3,8 @@ FastVideoDS Encoder 2
 Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) pour lire les vidéos encodées.  
 
 - Encodeur mis à jour pour corriger des problèmes d'incompatibilité avec certains fichiers vidéos  
-- Mis à Jour avec FFMpeg 9.0.1, prends désormais en compte les nouveaux codecs vidéos  
+- Mis à Jour avec FFMpeg 9.0.1, prends désormais en compte les nouveaux codecs vidéos
+  
   [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) prêt à l'emploi, fichiers .bat inclus  
 
 Fichiers .bat pour :  
