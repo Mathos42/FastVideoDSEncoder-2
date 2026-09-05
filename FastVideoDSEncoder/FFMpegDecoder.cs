@@ -22,6 +22,8 @@ namespace Gericom.FastVideoDSEncoder
         private AVFrame*         _frame;
 
         private readonly byte* _rgbData;
+        private          int   _videoScaledWidth;
+        private          int   _videoXOffset;
 
         private readonly Queue<RefFrame> _frameQueue = new();
         private readonly FramePool       _framePool;
@@ -133,22 +135,49 @@ namespace Gericom.FastVideoDSEncoder
                 if (aspect.num == 0 && aspect.den == 1)
                     aspect.num = 1;
 
-                FrameHeight = (int)Math.Round(_videoDecContext->height * 256.0 / _videoDecContext->width * aspect.den /
-                                              aspect.num);
+                // Natural height if we scale to fill the full 256px width.
+                int naturalHeight = (int)Math.Round(_videoDecContext->height * 256.0 / _videoDecContext->width *
+                                                     aspect.den / aspect.num);
+
+                int scaledWidth;
+                if (naturalHeight <= 192)
+                {
+                    // Fits within a single DS screen at full width - scale as before.
+                    scaledWidth = 256;
+                    FrameHeight = naturalHeight;
+                }
+                else
+                {
+                    // The DS screen is only 192 lines tall - a single screen, never
+                    // two screens stacked. Videos with an aspect ratio narrower than
+                    // 4:3 (256x192) would otherwise need more than 192 lines at full
+                    // width, silently producing a frame taller than the screen (no
+                    // encoder error, but garbage/blank display on real hardware).
+                    // Scale by height instead and pillarbox (black bars on the
+                    // sides) so the video always fits within 256x192.
+                    FrameHeight = 192;
+                    scaledWidth = (int)Math.Round(_videoDecContext->width * 192.0 / _videoDecContext->height *
+                                                   aspect.num / aspect.den);
+                }
 
                 int mod8 = FrameHeight & 7;
                 if (mod8 != 0)
                 {
                     FrameHeight &= ~7;
-                    if (mod8 >= 4)
+                    if (mod8 >= 4 && FrameHeight + 8 <= 192)
                         FrameHeight += 8;
                 }
+
+                scaledWidth = Math.Clamp((scaledWidth + 4) & ~7, 8, 256);
+
+                _videoScaledWidth = scaledWidth;
+                _videoXOffset     = ((256 - scaledWidth) / 2) & ~1;
 
                 _framePool = new FramePool(256, FrameHeight);
 
                 _swsContext = sws_getContext(_videoDecContext->width, _videoDecContext->height,
                     _videoDecContext->pix_fmt,
-                    256, FrameHeight, AVPixelFormat.AV_PIX_FMT_BGRA,
+                    scaledWidth, FrameHeight, AVPixelFormat.AV_PIX_FMT_BGRA,
                     (int)(SwsFlags.SWS_LANCZOS | SwsFlags.SWS_FULL_CHR_H_INT | SwsFlags.SWS_FULL_CHR_H_INP |
                           SwsFlags.SWS_ACCURATE_RND), null, null, null);
             }
@@ -170,6 +199,15 @@ namespace Gericom.FastVideoDSEncoder
                 // heap (crash with no managed exception, exit code
                 // 0xC0000374 / STATUS_HEAP_CORRUPTION) whenever FrameHeight > 192.
                 _rgbData = (byte*)NativeMemory.AlignedAlloc((nuint)(256 * FrameHeight * 4), 16);
+
+                // When pillarboxing (_videoScaledWidth < 256), sws_scale only
+                // ever writes into the [_videoXOffset, _videoXOffset +
+                // _videoScaledWidth) column range of every row - the side bars
+                // are never touched again after this, so zero them once here
+                // (AlignedAlloc does not zero-initialize) to get solid black
+                // bars instead of whatever garbage memory happened to contain.
+                if (_videoScaledWidth < 256)
+                    NativeMemory.Clear(_rgbData, (nuint)(256 * FrameHeight * 4));
 
                 while (FirstVideoPts == -1 && PumpData()) ;
             }
@@ -294,8 +332,9 @@ namespace Gericom.FastVideoDSEncoder
 
             // fixed (byte* pRgb = _rgbData)
             // {
+            byte* destPtr = _rgbData + (long)_videoXOffset * 4;
             sws_scale(_swsContext, _frame->data, _frame->linesize, 0,
-                _videoDecContext->height, new[] { _rgbData }, new[] { 256 * 4 });
+                _videoDecContext->height, new[] { destPtr }, new[] { 256 * 4 });
 
             var refFrame = _framePool.AcquireFrame();
 
