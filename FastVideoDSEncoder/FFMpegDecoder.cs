@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -24,6 +24,13 @@ namespace Gericom.FastVideoDSEncoder
         private readonly byte* _rgbData;
         private          int   _videoScaledWidth;
         private          int   _videoXOffset;
+
+        // Destination pointer/stride for sws_scale never change after
+        // construction (always _rgbData + fixed offset, stride 256*4), so
+        // build them once here instead of allocating a fresh byte*[]/int[]
+        // (implicitly converted to these fixed-size structs) on every frame.
+        private byte_ptrArray4 _dstData;
+        private int_array4     _dstLinesize;
 
         private readonly Queue<RefFrame> _frameQueue = new();
         private readonly FramePool       _framePool;
@@ -132,8 +139,15 @@ namespace Gericom.FastVideoDSEncoder
             if (VideoStreamId != NoStream)
             {
                 var aspect = _videoDecContext->sample_aspect_ratio;
-                if (aspect.num == 0 && aspect.den == 1)
+                // Some containers/codecs leave the SAR entirely unset (e.g.
+                // {0,0}), not just the common {0,1} case - guard against any
+                // non-positive numerator or denominator to avoid a division
+                // by zero (-> NaN -> garbage FrameHeight) below.
+                if (aspect.num <= 0 || aspect.den <= 0)
+                {
                     aspect.num = 1;
+                    aspect.den = 1;
+                }
 
                 // Natural height if we scale to fill the full 256px width.
                 int naturalHeight = (int)Math.Round(_videoDecContext->height * 256.0 / _videoDecContext->width *
@@ -208,6 +222,12 @@ namespace Gericom.FastVideoDSEncoder
                 // bars instead of whatever garbage memory happened to contain.
                 if (_videoScaledWidth < 256)
                     NativeMemory.Clear(_rgbData, (nuint)(256 * FrameHeight * 4));
+
+                _dstData    = new byte_ptrArray4();
+                _dstData[0] = _rgbData + (long)_videoXOffset * 4;
+
+                _dstLinesize    = new int_array4();
+                _dstLinesize[0] = 256 * 4;
 
                 while (FirstVideoPts == -1 && PumpData()) ;
             }
@@ -332,9 +352,8 @@ namespace Gericom.FastVideoDSEncoder
 
             // fixed (byte* pRgb = _rgbData)
             // {
-            byte* destPtr = _rgbData + (long)_videoXOffset * 4;
             sws_scale(_swsContext, _frame->data, _frame->linesize, 0,
-                _videoDecContext->height, new[] { destPtr }, new[] { 256 * 4 });
+                _videoDecContext->height, _dstData, _dstLinesize);
 
             var refFrame = _framePool.AcquireFrame();
 
