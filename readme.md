@@ -1,3 +1,5 @@
+> **Licence**: ce dépôt est un fork de Gericom/FastVideoDSEncoder, publié sans licence explicite (code d'origine : tous droits réservés). La licence GPLv3 de ce dépôt ne couvre que mes propres modifications et ajouts (mise à jour vers FFmpeg.AutoGen 9 / FFmpeg 9, correction de l'encodage des vidéos avec un ratio d'aspect atypique, corrections diverses), pas le code original de Gericom. La GPLv3 est également requise par les DLL FFmpeg redistribuées (build "full", compilé avec --enable-gpl --enable-libx264 --enable-libx265).
+
 FastVideoDS Encoder 2
 ===================
 Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://github.com/Mathos42/FastVideoDSPlayer-2) pour lire les vidéos encodées.  
@@ -28,6 +30,7 @@ Encodage d'un dossier entier de vidéos avec le son normalisé : https://www.hir
 * [FFmpeg](https://ffmpeg.org/)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+> **Licence**: this repository is a fork of Gericom/FastVideoDSEncoder, published without an explicit license (original code: all rights reserved). The GPLv3 license of this repository only covers my own modifications and additions (update to FFmpeg.AutoGen 9 / FFmpeg 9, fix for encoding videos with an unusual aspect ratio, various fixes), not Gericom's original code. GPLv3 is also required by the bundled FFmpeg DLLs (built with the "full" variant, --enable-gpl --enable-libx264 --enable-libx265).
 
 FastVideoDS Encoder 2
 ===================
