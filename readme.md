@@ -12,10 +12,10 @@ Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://git
   [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) prêt à l'emploi, fichiers .bat inclus  
 
 Fichiers .bat pour :  
-Encodage d'une ou plusieurs vidéos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
-Encodage d'un dossier entier de vidéos : https://www.hiraven.com/FastVideoDS/Encodage_repertoire.bat  
-Encodage d'une ou plusieurs vidéos avec le son normalisé : https://www.hiraven.com/FastVideoDS/FastVideoDS_Normalise.bat  
-Encodage d'un dossier entier de vidéos avec le son normalisé : https://www.hiraven.com/FastVideoDS/Encodage_Repertoire_Normalise.bat  
+Encodage d'une ou plusieurs vidéos : FastVideoDS.bat  
+Encodage d'un dossier entier de vidéos : Encodage_repertoire.bat  
+Encodage d'une ou plusieurs vidéos avec le son normalisé : FastVideoDS_Normalise.bat  
+Encodage d'un dossier entier de vidéos avec le son normalisé : Encodage_Repertoire_Normalise.bat  
 
 ## Utilisation manuelle  
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
@@ -44,10 +44,10 @@ Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.co
   [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) ready to use, including .bat files  
 
 .bat files for :  
-Encoding one or multiple videos : https://www.hiraven.com/FastVideoDS/FastVideoDS.bat  
-Encoding an entire folder of videos : https://www.hiraven.com/FastVideoDS/Encodage_repertoire.bat  
-Encoding one or more videos with standardised audio: https://www.hiraven.com/FastVideoDS/FastVideoDS_Normalise.bat  
-Encoding an entire folder of videos with standardised audio: https://www.hiraven.com/FastVideoDS/Encodage_Repertoire_Normalise.bat  
+Encoding one or multiple videos : FastVideoDS.bat  
+Encoding an entire folder of videos : Encodage_repertoire.bat  
+Encoding one or more videos with standardised audio: FastVideoDS_Normalise.bat  
+Encoding an entire folder of videos with standardised audio: Encodage_Repertoire_Normalise.bat  
 
 ## Manual operation
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
