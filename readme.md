@@ -42,8 +42,8 @@ Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.co
   [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) ready to use, including .bat files  
 
 .bat files for :  
-Encoding one or more videos or an entire folder: FastVideoDS.bat
-Encoding one or more videos or an entire folder with normalised audio: FastVideoDS_Normalise.bat
+Encoding one or more videos or an entire folder: FastVideoDS.bat  
+Encoding one or more videos or an entire folder with normalised audio: FastVideoDS_Normalise.bat  
 
 ## Manual operation
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
