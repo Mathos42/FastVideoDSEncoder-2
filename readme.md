@@ -9,11 +9,11 @@ Encodeur pour le format FastVideoDS. Utilisez [FastVideoDS Player-2](https://git
 - Lorsque la vidéo fait 208 lignes, alors que l'écran de la DS n'en fait que 192, la lecture de la vidéo plantait. Désormais l'encodeur réduit la largeur affichée (pillarboxing avec bandes noires sur les côtés) pour que la hauteur ne dépasse jamais l'écran, exactement comme du letterboxing mais sur l'axe horizontal.
 - Possibilité de normaliser le son lors de l'encodage (avec les fichiers .bat)
   
-  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) prêt à l'emploi, fichiers .bat inclus  
+  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) prêt à l'emploi, fichier .bat inclus  
 
-Fichiers .bat pour :  
-Encodage d'une ou plusieurs vidéos ou d'un dossier entier : FastVideoDS.bat  
-Encodage d'une ou plusieurs vidéos ou d'un dossier entier avec le son normalisé : FastVideoDS_Normalise.bat  
+Double clic sur le fichier .bat pour convertir tout un répertoire de vidéos avec le son original ou le son normalisé.  
+Glissé-déposé pour convertir une ou plusieurs vidéos, mais pas tout un répertoire, avec le son original ou le son normalisé.  
+Un menu permet de choisir entre le son normal ou normalisé.  
 
 ## Utilisation manuelle  
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
@@ -39,11 +39,11 @@ Encoder for the FastVideoDS format. Use [FastVideoDS Player-2](https://github.co
 - When the video was 208 lines wide, whilst the DS screen is only 192 lines wide, video playback would crash. Now, the encoder reduces the displayed width (pillarboxing with black bars on either side) so that the height never exceeds the screen, exactly like letterboxing but along the horizontal axis.
 - Option to normalise the audio during encoding (with .bat files)
 
-  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) ready to use, including .bat files  
+  [FastVideoDS Encoder](https://www.hiraven.com/FastVideoDS/FastVideoDSEncoder.zip) ready to use, including .bat file  
 
-.bat files for :  
-Encoding one or more videos or an entire folder : FastVideoDS.bat  
-Encoding one or more videos or an entire folder with normalised audio : FastVideoDS_Normalise.bat  
+Double-click the .bat file to convert an entire folder of videos with either the original audio or normalised audio.  
+Use drag and drop to convert one or more videos – but not an entire folder – with either the original audio or normalised audio.  
+A menu allows you to choose between normal and normalised audio.  
 
 ## Manual operation
     FastVideoDSEncoder.exe %%f "%%~nf.fv"
