@@ -1,0 +1,13 @@
+Mettre vos vidéos ici puis lancez le fichier bat dont vous avez besoin
+
+Place your videos here, then run the BAT file you need
+
+-----
+
+Encodage_repertoire - Normalise / Directory_encoding - Normalised
+
+FastVideoDS_Normalise / FastVideoDS_Normalised
+
+Encodage_repertoire / Directory_encoding
+
+FastvideoDS / FastvideoDS
