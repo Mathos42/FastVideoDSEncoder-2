@@ -23,15 +23,15 @@ if "%~1"=="" (
             echo.
             echo Normalisation du son pour : "%%f"
             echo.
-            Videos\x64\ffmpeg -y -hide_banner -v warning -stats -fflags +genpts -i "%%f" -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy -c:a aac "%%~dpnf_normalise.mp4"
+            bin\x64\ffmpeg -y -hide_banner -v warning -stats -fflags +genpts -i "%%f" -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy -c:a aac "%%~dpnf_normalise.mp4"
             echo.
             echo Encodage en cours pour : "%%f"
-            Videos\FastVideoDSEncoder.exe "%%~dpnf_normalise.mp4" "Encodes\%%~nf.fv"
+            bin\FastVideoDSEncoder.exe "%%~dpnf_normalise.mp4" "Encodes\%%~nf.fv"
             del "%%~dpnf_normalise.mp4"
         ) else (
             echo.
             echo Encodage normal en cours pour : "%%f"
-            Videos\FastVideoDSEncoder.exe "%%f" "Encodes\%%~nf.fv"
+            bin\FastVideoDSEncoder.exe "%%f" "Encodes\%%~nf.fv"
         )
     )
 ) else (
@@ -43,15 +43,15 @@ if "%~1"=="" (
             echo.
             echo Normalisation du son pour : %%f
             echo.
-            Videos\x64\ffmpeg -y -hide_banner -v warning -stats -fflags +genpts -i %%f -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy -c:a aac "%%~dpnf_normalise.mp4"
+            bin\x64\ffmpeg -y -hide_banner -v warning -stats -fflags +genpts -i %%f -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy -c:a aac "%%~dpnf_normalise.mp4"
             echo.
             echo Encodage en cours pour : %%f
-            Videos\FastVideoDSEncoder.exe "%%~dpnf_normalise.mp4" "Encodes\%%~nf.fv"
+            bin\FastVideoDSEncoder.exe "%%~dpnf_normalise.mp4" "Encodes\%%~nf.fv"
             del "%%~dpnf_normalise.mp4"
         ) else (
             echo.
             echo Encodage normal en cours pour : %%f
-            Videos\FastVideoDSEncoder.exe %%f "Encodes\%%~nf.fv"
+            bin\FastVideoDSEncoder.exe %%f "Encodes\%%~nf.fv"
         )
     )
 )
