@@ -69,8 +69,7 @@
     <MakeDir Directories="$(DossierFastVideoDSEncoder)" />
     <MakeDir Directories="$(DossierFastVideoDSEncoder)\bin" />
     <MakeDir Directories="$(DossierFastVideoDSEncoder)\Encodes" />
-    <MakeDir Directories="$(DossierFastVideoDSEncoder)\Videos" />
-    
+        
     <Copy SourceFiles="FastVideoDS.bat" DestinationFolder="$(DossierFastVideoDSEncoder)" />
     <Copy SourceFiles="Mettre Vos Videos Ici - PutYourVideosHere.txt" DestinationFolder="$(DossierFastVideoDSEncoder)" />
     
