@@ -55,16 +55,30 @@
     <None Update="x64\swscale-10.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Update="x64\ffmpeg.exe">
+    <None Update="x64\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-<ItemGroup>
-    <None Update="FastVideoDS.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Mettre Vos Videos Ici - PutYourVideosHere.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
+  <!-- Création de l'arborescence finale de FastVideoDSEncoder lors du build Release -->
+  <Target Name="OrganiserDossierSortie" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <DossierFastVideoDSEncoder>$(MSBuildProjectDirectory)\FastVideoDSEncoder</DossierFastVideoDSEncoder>
+    </PropertyGroup>
+    
+    <MakeDir Directories="$(DossierFastVideoDSEncoder)" />
+    <MakeDir Directories="$(DossierFastVideoDSEncoder)\bin" />
+    <MakeDir Directories="$(DossierFastVideoDSEncoder)\Encodes" />
+    <MakeDir Directories="$(DossierFastVideoDSEncoder)\Videos" />
+    
+    <Copy SourceFiles="FastVideoDS.bat" DestinationFolder="$(DossierFastVideoDSEncoder)" />
+    <Copy SourceFiles="Mettre Vos Videos Ici - PutYourVideosHere.txt" DestinationFolder="$(DossierFastVideoDSEncoder)" />
+    
+    <ItemGroup>
+      <FichiersCompiles Include="$(TargetDir)\**\*.*" Exclude="$(TargetDir)\FastVideoDS.bat;$(TargetDir)\Mettre Vos Videos Ici - PutYourVideosHere.txt" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(FichiersCompiles)" DestinationFolder="$(DossierFastVideoDSEncoder)\bin\%(RecursiveDir)" />
+  </Target>
+
 </Project>
